@@ -5,7 +5,7 @@ export default createStore({
   state: {
     authenticated: false,
     showMessage: false,
-    showCart: false
+    showOrderSuccess: false
  
   },
   getters: {
@@ -17,6 +17,10 @@ export default createStore({
     setShowMessage(state, message){
       state.showMessage = message
     },
+
+    setOrderSuccess(state, order){
+      state.showOrderSuccess= order
+    }
   },
 
 
@@ -26,6 +30,9 @@ export default createStore({
     }, 
     setShowMessage({commit}, message){
       commit('setShowMessage', message)
+    },
+    setOrderSuccess({commit}, order){
+      commit('showOrderSuccess', order)
     }
   },
   modules: {
