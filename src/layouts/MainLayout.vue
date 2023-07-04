@@ -34,6 +34,9 @@
            <option value="5">5</option>
 </select>
 
+<div v-if="$store.state.showOrderSuccess" class="alert alert-success" role="alert">
+  Order added successfully
+</div>
     
 
   </div>
@@ -65,6 +68,9 @@
 
 import { defineComponent, ref, reactive } from 'vue'
 let token = localStorage.getItem("user")
+  import { useStore } from 'vuex'
+
+const store = useStore()
 
 const selectOption = document.getElementById("select")
 console.log(selectOption)
@@ -113,8 +119,10 @@ methods: {
   })
     .then(response => {
       if (!response.ok) {
+          store.dispatch('showOrderSuccess', false)
         throw new Error('Request failed');
       }
+       store.dispatch('showOrderSuccess', true)
 
       return response.json();
     })
