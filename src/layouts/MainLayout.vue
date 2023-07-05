@@ -1,9 +1,11 @@
 <template>
+  <div>
    <header class="p-3 text-bg-dark">
     <div class="container">
       <div class="d-flex align-items-start justify-content-start justify-content-lg-start">
         <ul class="nav nav-pills nav-fill col-12 me-lg-auto mb-2 justify-content-between mb-md-0">
           <li>Home</li>
+          
         </ul> 
         
        
@@ -59,7 +61,7 @@
 <button class="btn btn-primary mx-auto mb-4" type="submit" style="width: 200px; display: block;">Order</button>
 </form>
 
-
+</div>
 
 </template>
 
@@ -68,10 +70,9 @@
 
 import { defineComponent, ref, reactive } from 'vue'
 let token = localStorage.getItem("user")
-  import { useStore } from 'vuex'
+import { useStore } from 'vuex'
 
 const store = useStore()
-
 const selectOption = document.getElementById("select")
 console.log(selectOption)
 export default defineComponent({
@@ -94,7 +95,27 @@ methods: {
   
   },
 
+  logout(){
+   console.log("logout")
+  },
+
   onSubmit() {
+
+    const getCart = fetch('https://dev-work-sample-2k3t.onrender.com/api/v1/cart', {
+      method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include'
+
+    }).then(response =>{
+      if(response.ok){
+       console.log(success)
+      }
+    }).then(data =>{
+      console.log(data)
+    })
 
     
    
@@ -119,21 +140,22 @@ methods: {
   })
     .then(response => {
       if (!response.ok) {
-          store.dispatch('showOrderSuccess', false)
+        store.dispatch('showOrderSuccess', false)
         throw new Error('Request failed');
+       
       }
-       store.dispatch('showOrderSuccess', true)
+      getCart
+      store.dispatch('showOrderSuccess', true)
 
       return response.json();
     })
     .then(data => {
-      // Handle the response data
-      console.log(data);
-    })
-    .catch(error => {
-      // Handle any errors
-      console.error(error);
-    });
+  
+  console.log(data);
+})
+.catch(error => {
+  console.error('Error during cart API request:', error);
+});
 }
 
 },
