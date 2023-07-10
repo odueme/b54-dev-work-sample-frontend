@@ -25,8 +25,8 @@
 
     <p class="card-text">{{ product.description }}</p>
     <p class="card-text">₦{{ product.price }}</p>
-   
-      <label for="quantity">Quantity</label>
+
+    <label for="quantity">Quantity</label>
       <select id="select" class="form-select form-select-sm mb-4" v-model="product[index]" @change="onChange(product.id, $event.target.value)">
         <option value="0">0</option>
            <option value="1">1</option>
@@ -36,10 +36,8 @@
            <option value="5">5</option>
 </select>
 
-<div v-if="$store.state.showOrderSuccess" class="alert alert-success" role="alert">
-  Order added successfully
-</div>
-    
+
+<button class="btn btn-primary mx-auto mb-4" @click.prevent="addToCart(data.id, data.quantity)" :key="index" style="width: 200px; display: block;">Add to cart</button>
 
   </div>
 
@@ -59,6 +57,9 @@
 
 </div>
 <button class="btn btn-primary mx-auto mb-4" type="submit" style="width: 200px; display: block;">Order</button>
+<div v-if="$store.state.showOrderSuccess" class="alert alert-success" role="alert">
+  Order added successfully
+</div>
 </form>
 
 </div>
@@ -84,49 +85,22 @@ export default defineComponent({
 
 
 methods: {
-  onChange(id, e){
-    let q = parseInt(e)
-    this.data.quantity = q 
-    this.data.id = id
-    
-    console.log(this.data)
 
-
-  
+  onChange(id, q){
+    this.data.id = parseInt(id)
+    this.data.quantity = parseInt(q)
   },
 
-  logout(){
-   console.log("logout")
-  },
 
-  onSubmit() {
+  addToCart(id, quantity){
+//     const id = this.data.id
+// const quantity = this.data.quantiy
 
-    const getCart = fetch('https://dev-work-sample-2k3t.onrender.com/api/v1/cart', {
-      method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    },
-    credentials: 'include'
 
-    }).then(response =>{
-      if(response.ok){
-       console.log(success)
-      }
-    }).then(data =>{
-      console.log(data)
-    })
 
-    
-   
+ 
+
   
-
-  const id = this.data.id;
-  const quantity = this.data.quantity;
-
-  if(quantity === 0){
-    return
-  }
 
 
   fetch('https://dev-work-sample-2k3t.onrender.com/api/v1/cart', {
@@ -136,7 +110,7 @@ methods: {
       'Content-Type': 'application/json'
     },
     credentials: 'include',
-    body: JSON.stringify({ productId: id, quantity: quantity })
+    body: JSON.stringify({productId: id, quantity: quantity})
   })
     .then(response => {
       if (!response.ok) {
@@ -144,8 +118,8 @@ methods: {
         throw new Error('Request failed');
        
       }
-      getCart
-      store.dispatch('showOrderSuccess', true)
+      
+     
 
       return response.json();
     })
@@ -156,6 +130,36 @@ methods: {
 .catch(error => {
   console.error('Error during cart API request:', error);
 });
+
+  },
+
+
+
+  onSubmit() {
+
+    
+
+
+    fetch('https://dev-work-sample-2k3t.onrender.com/api/v1/order', {
+      method: 'POST',
+      headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include'
+    }).then(response =>{
+      if(response.ok){
+       console.log("success")
+      } else{
+        console.log("error")
+      }
+    })
+
+  
+    
+   
+  
+
 }
 
 },
@@ -165,8 +169,8 @@ methods: {
   setup(){
 
     const data = reactive({
-      id: '',
-      quantity: ''
+        id: '',
+        quantity: ''
     })
     console.log(data)
    
